@@ -1,0 +1,8 @@
+airline_dataset
+dagster
+logs
+minio
+mysql
+postgresql
+warehouse
+.env

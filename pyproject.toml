@@ -1,0 +1,27 @@
+[project]
+name = "us_airlines"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9,<3.13"
+dependencies = [
+    "dagster"
+]
+
+[project.optional-dependencies]
+dev = [
+    "dagster-webserver", 
+    "pytest",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.dagster]
+module_name = "us_airlines"
+project_name = "us_airlines"
+
+[tool.setuptools.packages.find]
+exclude=["us_airlines_tests"]
+

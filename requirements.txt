@@ -1,0 +1,7 @@
+dagster==1.9.4
+dagit==1.9.4
+dagster-postgres
+pymysql
+cryptography
+dbt-core
+dbt-postgres
