@@ -1,0 +1,15 @@
+
+version: 2
+
+sources:
+  - name: gold
+    description: "Gold schema of US Airlimes dataset"
+    database: postgres
+    tables:
+      - name: airlines
+      - name: airports
+      - name: cancellation_codes
+      - name: flights
+
+
+    

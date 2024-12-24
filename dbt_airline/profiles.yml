@@ -1,12 +1,14 @@
 dbt_airline:
   outputs:
     dev:
-      dbname: us_airline
-      host: dbt_airline
-      pass: abc123
+      dbname: postgres
+      host: "{{env_var('POSTGRES_HOST')}}"
+      pass: "{{env_var('POSTGRES_PASSWORD')}}"
       port: 5432
       schema: gold
       threads: 1
       type: postgres
-      user: tester
+      user: "{{env_var('POSTGRES_USER')}}"
   target: dev
+
+
