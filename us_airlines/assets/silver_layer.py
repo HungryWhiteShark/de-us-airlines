@@ -35,8 +35,8 @@ def dim_airport(context, bronze_airport_dataset):
     
     df = df.convert_dtypes()
     
-    
     new_cols_name = {df.columns[i]: str(df.columns[i]).lower() for i in range(len(df.columns))}
+    
     df.rename(new_cols_name, inplace=True, axis=1)
     
     return Output(

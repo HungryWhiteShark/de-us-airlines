@@ -20,7 +20,7 @@ COMPUTE_KIND = 'Postgres'
             key_prefix=['gold'],
             metadata={
                 'primary_keys': ['iata_code'],
-                'columns': ['iata_code', 'airport', 'city', 'state', 'latitude', 'longitude']
+                'columns': ['iata_code', 'airport', 'city', 'state', 'latitude', 'longitude', 'sys_date']
             }
             
         )
@@ -84,7 +84,7 @@ def airlines_us_airlines(context, dim_airline):
             key_prefix=['gold'],
             metadata={
                 'primary_keys': ['cancellation_reason'],
-                'columns': ['cancellation_reason', 'cancellation_description']
+                'columns': ['cancellation_reason', 'cancellation_description', 'sys_date']
             }
             
         )
@@ -121,7 +121,7 @@ def cancellation_codes_us_airlines(context, dim_cancellationcode):
                 'columns': ['FLIGHT_DATE', 'airline', 'FLIGHT_NUMBER', 'ORIGIN_AIRPORT', 'DESTINATION_AIRPORT',
                             'DAY_OF_WEEK', 'TAIL_NUMBER', 'SCHEDULED_DEPARTURE', 'DEPARTURE_TIME', 'TAXI_OUT', 'WHEELS_OFF',
                             'SCHEDULED_TIME', 'ELAPSED_TIME', 'AIR_TIME', 'DISTANCE', 'WHEELS_ON', 'TAXI_IN', 'SCHEDULED_ARRIVAL',
-                            'ARRIVAL_TIME', 'ARRIVAL_DELAY', 'DIVERTED', 'CANCELLED', 'CANCELLATION_REASON']
+                            'ARRIVAL_TIME', 'ARRIVAL_DELAY', 'DIVERTED', 'CANCELLED', 'CANCELLATION_REASON', 'sys_date']
             }
             
         )

@@ -42,7 +42,7 @@ class MinIOIOManager(IOManager):
         
         
         if context.has_asset_partitions:
-            start, end = context.asset_partitions_time_window
+            start, _ = context.asset_partitions_time_window
             partition_str = start.strftime('%Y-%m-%d')
             return os.path.join(key, f'{partition_str}.parquet'), tmp_file_path
         

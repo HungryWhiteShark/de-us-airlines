@@ -84,14 +84,9 @@ def bronze_flight_dataset(context) -> Output[pd.DataFrame]:
     
     sql_query = f"SELECT * FROM flights "
     
-    try:
-        start, end = context.partition_time_window
+    start, end = context.partition_time_window
         
-        sql_query += f" WHERE MONTH = {str(start).split('-')[1]} "
-        
-    except Exception:
-        context.log.info('No partition key!')
-        
+    sql_query += f" WHERE MONTH = {str(start).split('-')[1]} "
         
     pd_data = context.resources.mysql_io_manager.extract_data(sql_query)
     

@@ -6,3 +6,6 @@ mysql
 postgresql
 warehouse
 .env
+us_airlines/__pycache__
+us_airlines/assets/__pycache__
+us_airlines/resources/__pycache__
