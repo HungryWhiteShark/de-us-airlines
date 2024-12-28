@@ -1,5 +1,5 @@
 from dagster import asset, Output, AssetIn, MetadataValue
-from datetime import date
+import datetime
 import pandas as pd
 
 LAYER = 'silver'
@@ -27,7 +27,7 @@ def dim_airport(context, bronze_airport_dataset):
     
     df['AIRPORT'] = df['AIRPORT'].str.strip()
     df['CITY'] = df['CITY'].str.strip()
-    df['sys_date'] = date.today()
+    df['sys_date'] = datetime.date.today()
     
     pd.to_numeric(df.iloc[:, 5], downcast='float')
     
@@ -65,7 +65,7 @@ def dim_airline(context, bronze_airline_dataset):
     
     df = bronze_airline_dataset.drop_duplicates(subset=['IATA_CODE'])
     df['AIRLINE'] = df['AIRLINE'].str.strip()
-    df['sys_date'] = date.today()
+    df['sys_date'] = datetime.date.today()
     
     df = df.convert_dtypes()
     
@@ -97,7 +97,7 @@ def dim_cancellationcode(context, bronze_cancelcode_dataset):
     
     df = bronze_cancelcode_dataset.drop_duplicates(subset=['CANCELLATION_REASON'])
     df['CANCELLATION_DESCRIPTION'] = df['CANCELLATION_DESCRIPTION'].str.strip()
-    df['sys_date'] = date.today()
+    df['sys_date'] = datetime.date.today()
     
     df = df.convert_dtypes()
     
@@ -128,17 +128,17 @@ def dim_cancellationcode(context, bronze_cancelcode_dataset):
 def fact_flight(context, bronze_flight_dataset):
     
     df = bronze_flight_dataset.drop_duplicates(subset=['AIRLINE', 'FLIGHT_NUMBER', 'ORIGIN_AIRPORT', 'DESTINATION_AIRPORT'])
+
+    df['FLIGHT_DATE'] = df['YEAR'].astype(str) + '-' + df['MONTH'].astype(str) + '-' + df['DAY'].astype(str)
     
-    df['FLIGHT_DATE'] = df['YEAR'].astype(str) + '/' + df['MONTH'].astype(str) + '/' + df['DAY'].astype(str)
+    df['FLIGHT_DATE'] = df['FLIGHT_DATE'].astype('datetime64[ns]')
+    
     
     df.drop(columns=['DEPARTURE_DELAY', 'AIR_SYSTEM_DELAY', 'SECURITY_DELAY', 'AIRLINE_DELAY', 'LATE_AIRCRAFT_DELAY', 
                      'WEATHER_DELAY', 'YEAR', 'MONTH', 'DAY'], inplace=True)
     
     
-    df['sys_date'] = date.today()
-    
-    df = df.convert_dtypes()
-    
+    df['sys_date'] = datetime.date.today()
     
     df.rename(columns=lambda x: str(x).lower(), inplace=True)
     

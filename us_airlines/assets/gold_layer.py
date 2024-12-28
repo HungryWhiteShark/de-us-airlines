@@ -117,18 +117,18 @@ def cancellation_codes_us_airlines(context, dim_cancellationcode):
             io_manager_key='psql_io_manager',
             key_prefix=['gold'],
             metadata={
-                'primary_keys': ['FLIGHT_DATE', 'airline', 'FLIGHT_NUMBER', 'ORIGIN_AIRPORT', 'DESTINATION_AIRPORT'],
-                'columns': ['FLIGHT_DATE', 'airline', 'FLIGHT_NUMBER', 'ORIGIN_AIRPORT', 'DESTINATION_AIRPORT',
-                            'DAY_OF_WEEK', 'TAIL_NUMBER', 'SCHEDULED_DEPARTURE', 'DEPARTURE_TIME', 'TAXI_OUT', 'WHEELS_OFF',
-                            'SCHEDULED_TIME', 'ELAPSED_TIME', 'AIR_TIME', 'DISTANCE', 'WHEELS_ON', 'TAXI_IN', 'SCHEDULED_ARRIVAL',
-                            'ARRIVAL_TIME', 'ARRIVAL_DELAY', 'DIVERTED', 'CANCELLED', 'CANCELLATION_REASON', 'sys_date']
+                'primary_keys': ['flight_date', 'airline', 'flight_number', 'origin_airport', 'destination_airport'],
+                'columns': ['flight_date', 'day_of_week', 'airline', 'flight_number', 'tail_number',
+                            'origin_airport', 'destination_airport','scheduled_departure', 'departure_time', 'taxi_out', 'wheels_off',
+                            'scheduled_time', 'elapsed_time', 'air_time', 'distance', 'wheels_on', 'taxi_in', 'scheduled_arrival',
+                            'arrival_time', 'arrival_delay', 'diverted', 'cancelled', 'cancellation_reason', 'sys_date']
             }
             
         )
     },  
     group_name=LAYER,
     compute_kind=COMPUTE_KIND,
-    description='Cancellation Codes'
+    description='Flights'
     
 )
 def flights_us_airlines(context, fact_flight):

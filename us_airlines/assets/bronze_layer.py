@@ -68,26 +68,28 @@ def bronze_cancelcode_dataset(context) -> Output[pd.DataFrame]:
     )
     
     
-    
-@asset(
-    
-    partitions_def=MonthlyPartitionsDefinition(start_date='2015-1-1', end_date='2016-1-1'),
-    
+
+@asset(  
     io_manager_key='minio_io_manager',
     required_resource_keys={'mysql_io_manager'},
     key_prefix=['bronze', 'carriers'],
     compute_kind='MySQL',
     group_name='ExtractLayer',
-    description='Store flights dataset as parquet in MinIO'
+    description='Store flights dataset as parquet in MinIO',
+    partitions_def=MonthlyPartitionsDefinition(start_date='2015-1-1', end_date='2016-1-1')
 )
 def bronze_flight_dataset(context) -> Output[pd.DataFrame]:
     
     sql_query = f"SELECT * FROM flights "
     
-    start, end = context.partition_time_window
-        
+    start, _ = context.partition_time_window
+    
+    context.log.info(start)
+    
     sql_query += f" WHERE MONTH = {str(start).split('-')[1]} "
-        
+    
+    context.log.info(str(start).split('-')[1])
+    
     pd_data = context.resources.mysql_io_manager.extract_data(sql_query)
     
     return Output(

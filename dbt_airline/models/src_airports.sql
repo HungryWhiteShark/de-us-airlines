@@ -1,3 +1,9 @@
 
+--select *
+--from {{ source('gold', 'airports') }}
 select *
-from {{ source('gold', 'airports') }}
+from {{ ref('airports') }}
+
+
+
+
