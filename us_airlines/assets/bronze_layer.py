@@ -67,7 +67,7 @@ def bronze_cancelcode_dataset(context) -> Output[pd.DataFrame]:
         }
     )
     
-    
+
 
 @asset(  
     io_manager_key='minio_io_manager',
@@ -82,13 +82,12 @@ def bronze_flight_dataset(context) -> Output[pd.DataFrame]:
     
     sql_query = f"SELECT * FROM flights "
     
-    start, _ = context.partition_time_window
+    month = context.asset_partition_key_for_output()
+
+    month = str(month).split('-')[1]
+    month = month[1] if month[0] == '0' else month
     
-    context.log.info(start)
-    
-    sql_query += f" WHERE MONTH = {str(start).split('-')[1]} "
-    
-    context.log.info(str(start).split('-')[1])
+    sql_query += f" WHERE MONTH = '{month}' "
     
     pd_data = context.resources.mysql_io_manager.extract_data(sql_query)
     

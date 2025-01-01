@@ -1,5 +1,7 @@
 airline_dataset
 dagster
+dagster_home/logs
+dagster_home/storage
 logs
 minio
 mysql
