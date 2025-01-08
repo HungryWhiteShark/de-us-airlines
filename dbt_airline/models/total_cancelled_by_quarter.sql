@@ -1,5 +1,7 @@
 
-
+{{
+    config(tags =['dbt_assets'])
+}}
 
 with cte as 
 (
@@ -8,7 +10,7 @@ with cte as
     WHEN MONTH BETWEEN 4 AND 6 THEN 'Q2'
     WHEN MONTH BETWEEN 7 AND 9 THEN 'Q3'
     WHEN MONTH BETWEEN 10 AND 12 THEN 'Q4' END AS QUARTER
-    FROM {{source('gold','flights')}}
+    FROM {{source('gold', 'flights')}}
 )
 SELECT AIRLINE, QUARTER, sum(CANCELLED)
 FROM cte

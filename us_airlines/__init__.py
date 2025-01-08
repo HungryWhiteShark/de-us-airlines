@@ -3,16 +3,19 @@ from dagster import Definitions, load_assets_from_modules
 from .resources.minio_io_manager import MinIOIOManager
 from .resources.mysql_io_manager import MySQLIOManager
 from .resources.psql_io_manager import PostgreSQLIOManager
+from .resources import dbt_resource
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-from . import assets
+from .assets import insert_data, bronze_layer, silver_layer, gold_layer, dbt
 import os
 
 
-all_assets = load_assets_from_modules([assets])
+all_assets = load_assets_from_modules(modules=[insert_data, bronze_layer, silver_layer, gold_layer])
+dbt_assets = load_assets_from_modules(modules=[dbt])
+
 
 
 MYSQL_CONFIG = {
@@ -45,10 +48,11 @@ PSQL_CONFIG= {
 
 
 defs = Definitions(
-    assets=all_assets,
+    assets=[*all_assets, *dbt_assets],
     resources={
         'mysql_io_manager': MySQLIOManager(MYSQL_CONFIG),
         'minio_io_manager': MinIOIOManager(MINIO_CONFIG),
-        'psql_io_manager': PostgreSQLIOManager(PSQL_CONFIG)
+        'psql_io_manager': PostgreSQLIOManager(PSQL_CONFIG),
+        'dbt': dbt_resource
     }
 )

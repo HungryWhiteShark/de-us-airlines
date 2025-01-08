@@ -1,6 +1,5 @@
-from dagster import asset, Output, Definitions, AssetIn
-from ..resources.mysql_io_manager import MySQLIOManager
-import pandas as pd
+from dagster import asset
+
 
 
 airline_csv = 'airline_dataset/airlines.csv'
