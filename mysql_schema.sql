@@ -61,5 +61,4 @@ CREATE TABLE flights (
     LATE_AIRCRAFT_DELAY int,
     WEATHER_DELAY int,
     primary key (year, month, day, airline, FLIGHT_NUMBER)
-
 );

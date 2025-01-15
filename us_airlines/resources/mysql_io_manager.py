@@ -37,11 +37,16 @@ class MySQLIOManager(IOManager):
     
     
     def load_input(self, context: InputContext, file_path) -> pd.DataFrame:
-        return pd.read_csv(file_path, header=0, engine='c')
+        df = pd.read_csv(file_path, header=0, engine='c', dtype={   
+            'SCHEDULED_DEPARTURE': 'string',           
+            'DEPARTURE_TIME': 'string',
+            'WHEELS_OFF': 'string',
+            'WHEELS_ON': 'string',    
+            'SCHEDULED_ARRIVAL': 'string',
+            'ARRIVAL_TIME': 'string'
+            })
+        return df
         
-        
-        
-    
     def extract_data(self, sql: str) -> pd.DataFrame:
         with connect_mysql(self._config) as db_conn:
             pd_data = pd.read_sql_query(sql, db_conn)

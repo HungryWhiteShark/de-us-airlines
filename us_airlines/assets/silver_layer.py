@@ -125,19 +125,23 @@ def dim_cancellationcode(context, bronze_cancelcode_dataset):
     compute_kind=COMPUTE_KIND,
     description='Flight fact table'
 )
-def fact_flight(context, bronze_flight_dataset):
-    
+def fact_flight(context, bronze_flight_dataset):  
     df = bronze_flight_dataset.drop_duplicates(subset=['AIRLINE', 'FLIGHT_NUMBER', 'ORIGIN_AIRPORT', 'DESTINATION_AIRPORT'])
-
+      
+    df['SCHEDULED_DEPARTURE'] = df['SCHEDULED_DEPARTURE'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
+    df['DEPARTURE_TIME'] = df['DEPARTURE_TIME'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
+    df['WHEELS_OFF'] = df['WHEELS_OFF'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
+    df['WHEELS_ON'] = df['WHEELS_ON'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
+    df['SCHEDULED_ARRIVAL'] = df['SCHEDULED_ARRIVAL'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
+    df['ARRIVAL_TIME'] = df['ARRIVAL_TIME'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
+    
     df['FLIGHT_DATE'] = df['YEAR'].astype(str) + '-' + df['MONTH'].astype(str) + '-' + df['DAY'].astype(str)
     
     df['FLIGHT_DATE'] = df['FLIGHT_DATE'].astype('datetime64[ns]')
     
-    
     df.drop(columns=['DEPARTURE_DELAY', 'AIR_SYSTEM_DELAY', 'SECURITY_DELAY', 'AIRLINE_DELAY', 'LATE_AIRCRAFT_DELAY', 
                      'WEATHER_DELAY', 'YEAR', 'MONTH', 'DAY'], inplace=True)
-    
-    
+
     df['sys_date'] = datetime.date.today()
     
     df.rename(columns=lambda x: str(x).lower(), inplace=True)

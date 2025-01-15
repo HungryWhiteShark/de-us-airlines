@@ -91,6 +91,7 @@ def bronze_flight_dataset(context) -> Output[pd.DataFrame]:
     
     pd_data = context.resources.mysql_io_manager.extract_data(sql_query)
     
+    
     return Output(
         pd_data, metadata={
             'table': 'flights',
