@@ -1,7 +1,6 @@
 from dagster import asset, Output, MonthlyPartitionsDefinition
-
 import pandas as pd
-import datetime
+
 
 @asset(
     io_manager_key='minio_io_manager',

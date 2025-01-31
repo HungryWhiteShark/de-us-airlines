@@ -54,7 +54,15 @@ def get_cancelcode_csv(context):
 )
 def get_flight_csv(context):
     table_name = 'flights'
-    obj = context.resources.mysql_io_manager.load_input(context, flight_csv)
+    dtype = {   
+            'SCHEDULED_DEPARTURE': 'string',           
+            'DEPARTURE_TIME': 'string',
+            'WHEELS_OFF': 'string',
+            'WHEELS_ON': 'string',    
+            'SCHEDULED_ARRIVAL': 'string',
+            'ARRIVAL_TIME': 'string' }
+    
+    obj = context.resources.mysql_io_manager.load_input(context, flight_csv, dtype)
     return context.resources.mysql_io_manager.handle_output(context, obj, table_name)
 
 

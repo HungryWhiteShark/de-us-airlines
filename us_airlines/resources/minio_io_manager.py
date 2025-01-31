@@ -1,6 +1,5 @@
 import os
 from contextlib import contextmanager
-from datetime import datetime
 from typing import Union
 import pandas as pd
 import pyarrow as pa
@@ -38,15 +37,18 @@ class MinIOIOManager(IOManager):
         
         os.makedirs(tmp_file_path, exist_ok=True)
         
-        tmp_file_path = f"{tmp_file_path}{table}.parquet"
-        
         
         if context.has_asset_partitions:
             start, _ = context.asset_partitions_time_window
-            partition_str = start.strftime('%Y-%m-%d')
+            partition_str = start.strftime('%Y-%m')
+                       
+            tmp_file_path = f'{tmp_file_path}{partition_str}.parquet'
+
             return os.path.join(key, f'{partition_str}.parquet'), tmp_file_path
         
         else:
+            tmp_file_path = f'{tmp_file_path}{table}.parquet'
+            
             return f'{key}.parquet', tmp_file_path
     
 
@@ -82,14 +84,32 @@ class MinIOIOManager(IOManager):
         bucket_name = self._config.get('bucket')
         key_name, tmp_file_path = self._get_path(context)
         
-        try:
-            with connect_minio(self._config) as client:
-                client.fget_object(bucket_name, key_name, tmp_file_path)
-                                                                                        
-            pd_data = pd.read_parquet(tmp_file_path)               
-            return pd_data
         
-        except Exception:
-            raise
-
+        if context.has_asset_partitions:
+            key_name = key_name[:key_name.rfind('/')]
+              
+            try:
+                with connect_minio(self._config) as client:
+                    df_temp = pd.DataFrame()
+                    df = pd.DataFrame()
+                    
+                    objects = client.list_objects(bucket_name, prefix=key_name, recursive=True)
+                    
+                    for obj in objects:                       
+                        client.fget_object(bucket_name, obj.object_name, tmp_file_path)
+                                                                                        
+                        df_temp = pd.read_parquet(tmp_file_path)
+                        df = pd.concat([df, df_temp], ignore_index=True)
+                                           
+                    return df
+            
+            except Exception:
+                raise
+        
+        with connect_minio(self._config) as client:
+            client.fget_object(bucket_name, key_name, tmp_file_path)
+            df = pd.read_parquet(tmp_file_path)
+            
+            return df
+        
 

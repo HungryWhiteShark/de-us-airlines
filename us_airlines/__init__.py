@@ -1,16 +1,11 @@
 
-from dagster import Definitions, load_assets_from_modules
+from dagster import Definitions, load_assets_from_modules, EnvVar
 from .resources.minio_io_manager import MinIOIOManager
 from .resources.mysql_io_manager import MySQLIOManager
 from .resources.psql_io_manager import PostgreSQLIOManager
 from .resources import dbt_resource
-from dotenv import load_dotenv
-
-load_dotenv()
-
 
 from .assets import insert_data, bronze_layer, silver_layer, gold_layer, dbt
-import os
 
 
 all_assets = load_assets_from_modules(modules=[insert_data, bronze_layer, silver_layer, gold_layer])
@@ -20,31 +15,30 @@ dbt_assets = load_assets_from_modules(modules=[dbt])
 
 MYSQL_CONFIG = {
     'host': 'localhost',
-    'port': int(os.getenv('MYSQL_PORT')),
-    'database': os.getenv('MYSQL_DATABASE'),
-    'user': os.getenv('MYSQL_USER'),
-    'password': os.getenv('MYSQL_PASSWORD')
+    'port': EnvVar.int('MYSQL_PORT'),
+    'database': EnvVar('MYSQL_DATABASE').get_value(),
+    'user': EnvVar('MYSQL_USER').get_value(),
+    'password': EnvVar('MYSQL_PASSWORD').get_value()
 }
 
 
 MINIO_CONFIG = {
     'endpoint_url': 'localhost',
     'port': '9000',
-    'bucket': os.getenv('BUCKET'),
-    'minio_access_key': os.getenv('MINIO_ACCESS_KEY'),
-    'minio_secret_key': os.getenv('MINIO_SECRET_KEY')
+    'bucket': EnvVar('BUCKET').get_value(),
+    'minio_access_key': EnvVar('MINIO_ACCESS_KEY').get_value(),
+    'minio_secret_key': EnvVar('MINIO_SECRET_KEY').get_value()
 }
 
 
 
 PSQL_CONFIG= {
     'host': 'localhost',
-    'port': '5432',
-    'user': os.getenv('POSTGRES_USER'),
-    'password': os.getenv('POSTGRES_PASSWORD'),
-    'database': os.getenv('POSTGRES_DB')
+    'port': EnvVar('POSTGRES_PORT').get_value(),
+    'user': EnvVar('POSTGRES_USER').get_value(),
+    'password': EnvVar('POSTGRES_PASSWORD').get_value(),
+    'database': EnvVar('POSTGRES_DB').get_value()
 }
-
 
 
 defs = Definitions(

@@ -1,4 +1,4 @@
-from dagster_dbt import dbt_assets, DbtCliResource, DagsterDbtTranslator, build_dbt_asset_selection
+from dagster_dbt import dbt_assets, DbtCliResource, DagsterDbtTranslator
 from dagster import AssetKey, AssetExecutionContext
 from ..project import dbt_project
 

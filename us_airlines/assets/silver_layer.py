@@ -1,10 +1,10 @@
-from dagster import asset, Output, AssetIn, MetadataValue
+from dagster import asset, Output, AssetIn
 import datetime
 import pandas as pd
 
 LAYER = 'silver'
-SCHEMA = 'carriers'
 GROUP_NAME = 'silver'
+SCHEMA = 'carriers'
 COMPUTE_KIND = 'MinIO'
 
 
@@ -126,14 +126,15 @@ def dim_cancellationcode(context, bronze_cancelcode_dataset):
     description='Flight fact table'
 )
 def fact_flight(context, bronze_flight_dataset):  
-    df = bronze_flight_dataset.drop_duplicates(subset=['AIRLINE', 'FLIGHT_NUMBER', 'ORIGIN_AIRPORT', 'DESTINATION_AIRPORT'])
+    df = bronze_flight_dataset.drop_duplicates(subset=['YEAR', 'MONTH', 'DAY', 'AIRLINE', 'FLIGHT_NUMBER', 
+                                                       'ORIGIN_AIRPORT', 'DESTINATION_AIRPORT'])
       
-    df['SCHEDULED_DEPARTURE'] = df['SCHEDULED_DEPARTURE'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
-    df['DEPARTURE_TIME'] = df['DEPARTURE_TIME'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
-    df['WHEELS_OFF'] = df['WHEELS_OFF'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
-    df['WHEELS_ON'] = df['WHEELS_ON'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
-    df['SCHEDULED_ARRIVAL'] = df['SCHEDULED_ARRIVAL'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
-    df['ARRIVAL_TIME'] = df['ARRIVAL_TIME'].astype(str).apply(lambda x: x[:2]+':'+x[2:])
+    df['SCHEDULED_DEPARTURE'] = df['SCHEDULED_DEPARTURE'].astype(str).apply(lambda x: x[:2]+':'+x[2:] if x != 'None' else None)
+    df['DEPARTURE_TIME'] = df['DEPARTURE_TIME'].astype(str).apply(lambda x: x[:2]+':'+x[2:] if x != 'None' else None)
+    df['WHEELS_OFF'] = df['WHEELS_OFF'].astype(str).apply(lambda x: x[:2]+':'+x[2:] if x != 'None' else None )
+    df['WHEELS_ON'] = df['WHEELS_ON'].astype(str).apply(lambda x: x[:2]+':'+x[2:]if x != 'None' else None )
+    df['SCHEDULED_ARRIVAL'] = df['SCHEDULED_ARRIVAL'].astype(str).apply(lambda x: x[:2]+':'+x[2:] if x != 'None' else None )
+    df['ARRIVAL_TIME'] = df['ARRIVAL_TIME'].astype(str).apply(lambda x: x[:2]+':'+x[2:] if x != 'None' else None )
     
     df['FLIGHT_DATE'] = df['YEAR'].astype(str) + '-' + df['MONTH'].astype(str) + '-' + df['DAY'].astype(str)
     
@@ -143,6 +144,13 @@ def fact_flight(context, bronze_flight_dataset):
                      'WEATHER_DELAY', 'YEAR', 'MONTH', 'DAY'], inplace=True)
 
     df['sys_date'] = datetime.date.today()
+    
+    df['SCHEDULED_DEPARTURE'] = df['SCHEDULED_DEPARTURE'].astype('datetime64[ns]')               
+    df['DEPARTURE_TIME'] = df['DEPARTURE_TIME'].str.replace('24:', '00:').astype('datetime64[ns]')
+    df['WHEELS_OFF'] = df['WHEELS_OFF'].str.replace('24:', '00:').astype('datetime64[ns]')
+    df['WHEELS_ON'] = df['WHEELS_ON'].str.replace('24:', '00:').astype('datetime64[ns]')
+    df['SCHEDULED_ARRIVAL'] = df['SCHEDULED_ARRIVAL'].str.replace('24:', '00:').astype('datetime64[ns]')
+    df['ARRIVAL_TIME'] = df['ARRIVAL_TIME'].str.replace('24:', '00:').astype('datetime64[ns]')
     
     df.rename(columns=lambda x: str(x).lower(), inplace=True)
     

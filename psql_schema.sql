@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS gold.flights(
     TAXI_IN int8,
     SCHEDULED_ARRIVAL timestamptz,
     ARRIVAL_TIME timestamptz,
-    ARRIVAL_DELAY timestamptz,
+    ARRIVAL_DELAY float,
     DIVERTED int8,
     CANCELLED int8,
     CANCELLATION_REASON text,

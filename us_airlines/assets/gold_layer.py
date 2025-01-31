@@ -1,5 +1,4 @@
 from dagster import multi_asset, Output, AssetIn, AssetOut
-import pandas as pd
 
 
 LAYER = 'gold'
@@ -132,7 +131,7 @@ def cancellation_codes_us_airlines(context, dim_cancellationcode):
     
 )
 def flights_us_airlines(context, fact_flight):
-    
+    context.log.info(context.asset_key.path)
     return Output(
         fact_flight,
         metadata={
