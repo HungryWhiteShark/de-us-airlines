@@ -3,7 +3,7 @@ version: 2
 
 sources:
   - name: gold
-    description: "Gold schema of US Airlimes dataset"
+    description: "Gold schema of US Airlines dataset"
     database: postgres
     tables:
       - name: airlines

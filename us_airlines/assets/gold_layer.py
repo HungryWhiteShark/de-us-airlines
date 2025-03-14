@@ -1,5 +1,5 @@
-from dagster import multi_asset, Output, AssetIn, AssetOut
-
+from dagster import multi_asset, Output, AssetIn, AssetOut, MonthlyPartitionsDefinition, IdentityPartitionMapping
+import numpy as np
 
 LAYER = 'gold'
 COMPUTE_KIND = 'Postgres'
@@ -107,6 +107,10 @@ def cancellation_codes_us_airlines(context, dim_cancellationcode):
 @multi_asset(
     ins = {
         'fact_flight': AssetIn(
+            key_prefix=['silver', 'carriers'], 
+            partition_mapping=IdentityPartitionMapping()
+        ),
+        'dim_origin_airport_name': AssetIn(
             key_prefix=['silver', 'carriers']
         )
     },
@@ -127,11 +131,15 @@ def cancellation_codes_us_airlines(context, dim_cancellationcode):
     },  
     group_name=LAYER,
     compute_kind=COMPUTE_KIND,
-    description='Flights'
-    
+    description='Flights',
+    partitions_def=MonthlyPartitionsDefinition(start_date='2015-1-1', end_date='2016-1-1'),
 )
-def flights_us_airlines(context, fact_flight):
-    context.log.info(context.asset_key.path)
+def flights_us_airlines(context, fact_flight, dim_origin_airport_name):
+    dt = dict(dim_origin_airport_name.values)
+    
+    fact_flight['origin_airport'] = fact_flight['origin_airport'].map(dt)
+    fact_flight['destination_airport'] = fact_flight.loc[fact_flight['destination_airport'].str[0] == '1'].map(dt)
+    
     return Output(
         fact_flight,
         metadata={
@@ -139,3 +147,4 @@ def flights_us_airlines(context, fact_flight):
             'records': len(fact_flight)
         }
     )
+

@@ -17,8 +17,9 @@ flight_csv = 'airline_dataset/flights.csv'
 )
 def get_airline_csv(context):
     table_name = 'airlines'
-    obj = context.resources.mysql_io_manager.load_input(context, airline_csv)
-    return context.resources.mysql_io_manager.handle_output(context, obj, table_name)
+    
+    for obj in context.resources.mysql_io_manager.load_input(context, airline_csv):
+        context.resources.mysql_io_manager.handle_output(context, obj, table_name)
     
 
 @asset(
@@ -29,8 +30,8 @@ def get_airline_csv(context):
 )
 def get_airport_csv(context):
     table_name = 'airports'
-    obj = context.resources.mysql_io_manager.load_input(context, airport_csv)
-    return context.resources.mysql_io_manager.handle_output(context, obj, table_name)
+    for obj in context.resources.mysql_io_manager.load_input(context, airport_csv):
+        context.resources.mysql_io_manager.handle_output(context, obj, table_name)
 
 
 @asset(
@@ -41,8 +42,8 @@ def get_airport_csv(context):
 )
 def get_cancelcode_csv(context):
     table_name = 'cancellation_codes'
-    obj = context.resources.mysql_io_manager.load_input(context, cancelcode_csv)
-    return context.resources.mysql_io_manager.handle_output(context, obj, table_name)
+    for obj in context.resources.mysql_io_manager.load_input(context, cancelcode_csv):
+        context.resources.mysql_io_manager.handle_output(context, obj, table_name)
 
 
 
@@ -62,7 +63,7 @@ def get_flight_csv(context):
             'SCHEDULED_ARRIVAL': 'string',
             'ARRIVAL_TIME': 'string' }
     
-    obj = context.resources.mysql_io_manager.load_input(context, flight_csv, dtype)
-    return context.resources.mysql_io_manager.handle_output(context, obj, table_name)
+    for obj in context.resources.mysql_io_manager.load_input(context, flight_csv, dtype):
+        context.resources.mysql_io_manager.handle_output(context, obj, table_name)
 
 

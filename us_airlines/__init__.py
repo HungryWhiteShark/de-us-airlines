@@ -15,7 +15,7 @@ dbt_assets = load_assets_from_modules(modules=[dbt])
 
 MYSQL_CONFIG = {
     'host': 'localhost',
-    'port': EnvVar.int('MYSQL_PORT'),
+    'port': 3306,
     'database': EnvVar('MYSQL_DATABASE').get_value(),
     'user': EnvVar('MYSQL_USER').get_value(),
     'password': EnvVar('MYSQL_PASSWORD').get_value()
@@ -34,7 +34,7 @@ MINIO_CONFIG = {
 
 PSQL_CONFIG= {
     'host': 'localhost',
-    'port': EnvVar('POSTGRES_PORT').get_value(),
+    'port': 5432,
     'user': EnvVar('POSTGRES_USER').get_value(),
     'password': EnvVar('POSTGRES_PASSWORD').get_value(),
     'database': EnvVar('POSTGRES_DB').get_value()
